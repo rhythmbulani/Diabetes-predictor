@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diabetes Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 420px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 6px 0 15px 0;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Diabetes Prediction</h2>
+
+    <label>Age</label>
+    <input type="number" id="age" placeholder="Enter age">
+
+    <label>Glucose Level</label>
+    <input type="number" id="glucose" placeholder="Enter glucose">
+
+    <label>Insulin Level</label>
+    <input type="number" id="insulin" placeholder="Enter insulin">
+
+    <label>BMI</label>
+    <input type="number" id="bmi" placeholder="Enter BMI">
+
+    <button onclick="predict()">Predict</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function predict() {
+            const data = {
+                age: Number(document.getElementById("age").value),
+                glucose: Number(document.getElementById("glucose").value),
+                insulin: Number(document.getElementById("insulin").value),
+                bmi: Number(document.getElementById("bmi").value)
+            };
+
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const type = result.diabetes_type;
+
+            let message = "";
+
+            if (type === 0) {
+                message = "The patient is predicted to NOT have diabetes.";
+            } else if (type === 1) {
+                message = "The patient is predicted to HAVE diabetes.";
+            }
+
+            document.getElementById("result").innerHTML = message;
+        }
+    </script>
+
+</body>
+</html>
